@@ -19,7 +19,9 @@ def lexer():
     print ("executing lexer function...")
 
 # program to read file char by char 
-#will put chars together to form a word
+#will put chars together to form a word and will do the same to put a number together 
+
+
     word = '' # this will hold the string 
     number = '' # this will be a number 
     current_state = 0
