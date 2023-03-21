@@ -66,12 +66,12 @@ def lexer():
                     # set curTokenType so we later set the token
                     curTokenType = TokenType.OPERATOR
 
-                # check if the line starts with any of the supported operators
+                # check if the line starts with any of the supported constants
                 elif (match := re.search(startsWithRealRegex, line)) is not None:
                     # set curTokenType so we later set the token
                     curTokenType = TokenType.REAL
 
-                # check if the line starts with any of the supported operators
+                # check if the line starts with any of the supported separators
                 elif (match := re.search(startsWithSeparatorRegex, line)) is not None:
                     # set curTokenType so we later set the token
                     curTokenType = TokenType.SEPARATOR
