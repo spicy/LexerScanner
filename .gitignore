@@ -1,0 +1,13 @@
+
+LexerScanner/.vs/LexerScanner/v17/ipch/AutoPCH/7f9f1340283ead9e/MAIN.ipch
+*.db
+*.log
+*.tlog
+*.pdb
+*.idb
+*.obj
+*.ilk
+*.recipe
+*.ipch
+*.vsidx
+*.lock
