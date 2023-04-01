@@ -133,7 +133,7 @@ void lexer()
                     cout << "Error when getting next token.\n\n";
                     break;
                 }
-                    
+
                 tokens.push_back(token);
 
                 int numToRemoveFromFront = token.match.length();
