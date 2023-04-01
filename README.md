@@ -7,7 +7,6 @@ A Lexer which *reads a file and analyzes it for tokens* using a FSM in Python.
 
 ## Contributors
 - **Developer** - Daniel Currey
-- **Developer** - Anthony Ruiz
 - **Developer** - Malka Lazerson
 
 ## Use Requirements
