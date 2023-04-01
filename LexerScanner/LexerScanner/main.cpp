@@ -2,6 +2,7 @@
 #include <regex>
 #include <fstream>
 #include <vector>
+#include <list>
 
 using namespace std;
 
@@ -23,6 +24,7 @@ public:
     TokenType type;
     string match;
     Token(TokenType newType, string newMatch) : type(newType), match(newMatch) { }
+    Token() : type(TokenType::NONE), match("") { }
 };
 
 Token greedilyGetNextToken(string input)
@@ -87,7 +89,7 @@ Token greedilyGetNextToken(string input)
         }
     }
 
-    //if (largestMatchType == TokenType::NONE || largestMatch.empty()) return null;
+    if (largestMatchType == TokenType::NONE || largestMatch.empty()) return Token(TokenType::NONE, "Error");;
 
     return Token(largestMatchType, largestMatch);
 }
@@ -109,7 +111,7 @@ inline const char* TypeToString(TokenType type)
 
 void lexer()
 {
-    //Token tokens[];
+    list<Token> tokens;
 
     string input;
     std::ifstream myfile("input_scode.txt");
@@ -125,13 +127,22 @@ void lexer()
                 // continue as long as the line string is not empty
                 if (runningInput.length() == 0) break;
 
-                Token toPrint = greedilyGetNextToken(runningInput);
-                int numToRemoveFromFront = toPrint.match.length();
-                runningInput.erase(0, numToRemoveFromFront);
+                Token token = greedilyGetNextToken(runningInput);
+                if (token.type == TokenType::NONE || token.match == "")
+                {
+                    cout << "Error when getting next token.\n\n";
+                    break;
+                }
+                    
+                tokens.push_back(token);
 
-                cout << TypeToString(toPrint.type) << "         '" << toPrint.match << "'" << endl;
+                int numToRemoveFromFront = token.match.length();
+                runningInput.erase(0, numToRemoveFromFront);
             }
         }
+
+        for (Token token : tokens)
+            cout << TypeToString(token.type) << "         '" << token.match << "'" << endl;
     }
 }
 
