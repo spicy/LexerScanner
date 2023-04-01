@@ -1,17 +1,19 @@
 #include <iostream>
 #include <regex>
 #include <fstream>
+#include <vector>
 
 using namespace std;
 
 enum class TokenType
 {
-    NONE = 0,
-    KEYWORD = 1,
-    SEPARATOR = 2,
-    IDENTIFIER = 3,
-    OPERATOR = 4,
-    REAL = 5
+    NONE,
+    KEYWORD,
+    SEPARATOR,
+    IDENTIFIER,
+    OPERATOR,
+    REAL,
+    LITERAL
 };
 
 
@@ -19,18 +21,98 @@ class Token
 {
 public:
     TokenType type;
-    string str;
-    Token(TokenType newType, string newStr) : type(newType), str(newStr) { }
+    string match;
+    Token(TokenType newType, string newMatch) : type(newType), match(newMatch) { }
 };
 
+Token greedilyGetNextToken(string input)
+{
+    string largestMatch;
+    TokenType largestMatchType = TokenType::NONE;
+
+    // Try to match all lexing cases at the start of the input.
+    smatch keywordMatch;
+    regex startsWithKeywordRegex("while");
+    if (regex_search(input, keywordMatch, startsWithKeywordRegex))
+    {
+        if (keywordMatch.length() > largestMatch.length())
+        {
+            largestMatch = keywordMatch[0];
+            largestMatchType = TokenType::KEYWORD;
+        }
+    }
+
+    smatch operatorMatch;
+    regex startsWithOperatorRegex("=");
+    if (regex_search(input, operatorMatch, startsWithOperatorRegex))
+    {
+        if (operatorMatch.length() > largestMatch.length())
+        {
+            largestMatch = operatorMatch[0];
+            largestMatchType = TokenType::OPERATOR;
+        }
+    }
+
+    smatch realMatch;
+    regex startsWithRealRegex("0");
+    if (regex_search(input, realMatch, startsWithRealRegex))
+    {
+        if (realMatch.length() > largestMatch.length())
+        {
+            largestMatch = realMatch[0];
+            largestMatchType = TokenType::REAL;
+        }
+    }
+
+    smatch separatorMatch;
+    regex startsWithSeparatorRegex("separator");
+    if (regex_search(input, separatorMatch, startsWithSeparatorRegex))
+    {
+        if (separatorMatch.length() > largestMatch.length())
+        {
+            largestMatch = separatorMatch[0];
+            largestMatchType = TokenType::SEPARATOR;
+        }
+    }
+
+    smatch literalMatch;
+    // no space
+    regex startsWithLiteralRegex("a");
+    if (regex_search(input, literalMatch, startsWithLiteralRegex))
+    {
+        if (literalMatch.length() > largestMatch.length())
+        {
+            largestMatch = literalMatch[0];
+            largestMatchType = TokenType::LITERAL;
+        }
+    }
+
+    if (largestMatchType == TokenType::NONE || largestMatch.empty())
+    {
+        // ERROR SOMETHING WENT WRONG, NO MATCHES.....
+    }
+
+    return Token(largestMatchType, largestMatch);
+}
+
+inline const char* TypeToString(TokenType type)
+{
+    switch (type)
+    {
+    case TokenType::NONE:       return "NONE";
+    case TokenType::KEYWORD:    return "keyword";
+    case TokenType::SEPARATOR:  return "separator";
+    case TokenType::IDENTIFIER: return "identifier";
+    case TokenType::OPERATOR:   return "operator";
+    case TokenType::REAL:       return "real";
+    case TokenType::LITERAL:    return "literal";
+    default:                    return "UNKNOWN";
+    }
+}
 
 void lexer()
 {
     //Token tokens[];
-    regex startsWithKeywordRegex("^while|^if|^int");
-    regex startsWithOperatorRegex("^=|^<|^>");
-    regex startsWithRealRegex("^[0-9]");
-    regex startsWithSeparatorRegex("^(|^)");
 
     string input;
     std::ifstream myfile("input_scode.txt");
@@ -39,93 +121,25 @@ void lexer()
     if (myfile.is_open()) {
         while (myfile.good()) {
             myfile >> input;
-        }
-    }
 
-    string runningInput = input;
-    while (true)
-    {
-        // continue as long as the line string is not empty
-        if (runningInput.length() == 0) break;
+            string runningInput = input;
+            while (true)
+            {
+                // continue as long as the line string is not empty
+                if (runningInput.length() == 0) break;
 
-        //string to be searched
-        string mystr = "She sells_sea shells in the sea shore";
+                Token toPrint = greedilyGetNextToken(runningInput);
+                int numToRemoveFromFront = toPrint.match.length();
+                runningInput.erase(0, numToRemoveFromFront);
 
-
-        TokenType curTokenType = TokenType::NONE;
-        smatch match;
-        // check if the line starts with any of the supported keywords, operators, constants, or separators
-        if (regex_search(mystr, match, startsWithKeywordRegex))
-        {
-            curTokenType = TokenType::KEYWORD;
+                cout << TypeToString(toPrint.type) << "         '" << toPrint.match << "'" << endl;
+            }
         }
-        else if (regex_search(mystr, match, startsWithOperatorRegex))
-        {
-            curTokenType = TokenType::OPERATOR;
-        }
-        else if (regex_search(mystr, match, startsWithRealRegex))
-        {
-            curTokenType = TokenType::REAL;
-        }
-        else if (regex_search(mystr, match, startsWithSeparatorRegex))
-        {
-            curTokenType = TokenType::SEPARATOR;
-        }
-        else
-        {
-            //maybe?
-            curTokenType = TokenType::IDENTIFIER;
-        }
-
-        cout << "String that matches the pattern:" << endl;
-        for (auto instance : match)
-            cout << instance << " ";
     }
 }
+
 
 int main()
 {
     lexer();
 }
-
-
-/*
-    with open('input_scode.txt', 'r') as fileobj:
-        # Remove all spaces then start reading from each line of the file
-        filestring = fileobj.read().replace(' ', '')
-        while True:
-            # continue as long as the line string is not empty
-            if filestring == "":
-                break
-
-            match = None
-            curTokenType = TokenType.NONE
-
-            # check if the line starts with any of the supported keywords, operators, constants, or separators
-            if (match := re.search(startsWithKeywordRegex, filestring)) != None:
-                curTokenType = TokenType.KEYWORD
-                print("KEYWORD")
-            elif (match := re.search(startsWithOperatorRegex, filestring)) != None:
-                curTokenType = TokenType.OPERATOR
-                print("OPERATOR")
-            elif (match := re.search(startsWithRealRegex, filestring)) != None:
-                curTokenType = TokenType.REAL
-                print("REAL")
-            elif (match := re.search(startsWithSeparatorRegex, filestring)) != None:
-                curTokenType = TokenType.SEPARATOR
-                print("SEPARATOR")
-            else:
-                print("LITERAL?")
-                break
-
-            print(match.group(1))
-            if match != None and curTokenType != TokenType.NONE:
-                # remove whatever matched from the front of the string
-                filestring = filestring[match.len():]
-                # append the token we found to the running list
-                #tokens.append(Token(curTokenType, match))
-
-    # once done, print them all out
-    #for token in tokens:
-    #    print(token.tokenType + " " + token.str + "\n")
-*/

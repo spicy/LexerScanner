@@ -11,3 +11,9 @@ LexerScanner/.vs/LexerScanner/v17/ipch/AutoPCH/7f9f1340283ead9e/MAIN.ipch
 *.ipch
 *.vsidx
 *.lock
+*.opendb
+*.db-shm
+*.db-wal
+*.enc
+LexerScanner/.vs/LexerScanner/v17/.suo
+LexerScanner/.vs/LexerScanner/v17/.suo
