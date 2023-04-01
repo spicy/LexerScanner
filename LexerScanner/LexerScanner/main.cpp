@@ -32,7 +32,7 @@ Token greedilyGetNextToken(string input)
 
     // Try to match all lexing cases at the start of the input.
     smatch keywordMatch;
-    regex startsWithKeywordRegex("while");
+    regex startsWithKeywordRegex("^while|^if|^float|^double|^int|^string");
     if (regex_search(input, keywordMatch, startsWithKeywordRegex))
     {
         if (keywordMatch.length() > largestMatch.length())
@@ -43,7 +43,7 @@ Token greedilyGetNextToken(string input)
     }
 
     smatch operatorMatch;
-    regex startsWithOperatorRegex("=");
+    regex startsWithOperatorRegex("^[=]|^[<]|^[>]");
     if (regex_search(input, operatorMatch, startsWithOperatorRegex))
     {
         if (operatorMatch.length() > largestMatch.length())
@@ -54,7 +54,7 @@ Token greedilyGetNextToken(string input)
     }
 
     smatch realMatch;
-    regex startsWithRealRegex("0");
+    regex startsWithRealRegex("this needs to change");
     if (regex_search(input, realMatch, startsWithRealRegex))
     {
         if (realMatch.length() > largestMatch.length())
@@ -65,7 +65,7 @@ Token greedilyGetNextToken(string input)
     }
 
     smatch separatorMatch;
-    regex startsWithSeparatorRegex("separator");
+    regex startsWithSeparatorRegex("^[(]|^[)]|^[;]");
     if (regex_search(input, separatorMatch, startsWithSeparatorRegex))
     {
         if (separatorMatch.length() > largestMatch.length())
@@ -77,7 +77,7 @@ Token greedilyGetNextToken(string input)
 
     smatch literalMatch;
     // no space
-    regex startsWithLiteralRegex("a");
+    regex startsWithLiteralRegex("^[A-Za-z]+");
     if (regex_search(input, literalMatch, startsWithLiteralRegex))
     {
         if (literalMatch.length() > largestMatch.length())
@@ -87,10 +87,7 @@ Token greedilyGetNextToken(string input)
         }
     }
 
-    if (largestMatchType == TokenType::NONE || largestMatch.empty())
-    {
-        // ERROR SOMETHING WENT WRONG, NO MATCHES.....
-    }
+    //if (largestMatchType == TokenType::NONE || largestMatch.empty()) return null;
 
     return Token(largestMatchType, largestMatch);
 }
