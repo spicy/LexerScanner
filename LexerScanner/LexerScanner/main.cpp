@@ -56,7 +56,7 @@ Token greedilyGetNextToken(string input)
     }
 
     smatch realMatch;
-    regex startsWithRealRegex("this needs to change");
+    regex startsWithRealRegex("^[-+]?[0-9]*\.?[0-9]+");
     if (regex_search(input, realMatch, startsWithRealRegex))
     {
         if (realMatch.length() > largestMatch.length())
