@@ -10,7 +10,13 @@ A Lexer which *reads a file and analyzes it for tokens* using a FSM in C++.
 - **Developer** - Malka Lazerson
 
 ## Use Requirements
-*   A valid input file.
+*   A valid input for the file "input_scode.txt".
+
+## How to run
+*   Get the most recent build by going to https://github.com/spicy/LexerScanner/releases/tag/Latest, and modify the input_scode.txt file as needed. Run the LexerScanner.exe file, and then view the output.txt file to see the generated tokens.
+
+## How to Build
+*   Build on Visual Studio IDE should be made in x86, C++.
 
 ## License
 > Copyright (c) Daniel Currey
