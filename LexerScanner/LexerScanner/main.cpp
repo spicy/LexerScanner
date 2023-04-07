@@ -13,8 +13,7 @@ enum class TokenType
     SEPARATOR,
     IDENTIFIER,
     OPERATOR,
-    REAL,
-    LITERAL
+    REAL
 };
 
 
@@ -77,15 +76,15 @@ Token greedilyGetNextToken(string input)
         }
     }
 
-    smatch literalMatch;
+    smatch identifierMatch;
     // no space
-    regex startsWithLiteralRegex("^[A-Za-z]+");
-    if (regex_search(input, literalMatch, startsWithLiteralRegex))
+    regex startsWithIdentifierRegex("^[_A-Za-z]+");
+    if (regex_search(input, identifierMatch, startsWithIdentifierRegex))
     {
-        if (literalMatch.length() > largestMatch.length())
+        if (identifierMatch.length() > largestMatch.length())
         {
-            largestMatch = literalMatch[0];
-            largestMatchType = TokenType::LITERAL;
+            largestMatch = identifierMatch[0];
+            largestMatchType = TokenType::IDENTIFIER;
         }
     }
 
@@ -104,7 +103,6 @@ inline const char* TypeToString(TokenType type)
     case TokenType::IDENTIFIER: return "identifier";
     case TokenType::OPERATOR:   return "operator";
     case TokenType::REAL:       return "real";
-    case TokenType::LITERAL:    return "literal";
     default:                    return "UNKNOWN";
     }
 }
@@ -115,7 +113,6 @@ void lexer()
 
     string input;
     std::ifstream myfile("input_scode.txt");
-
     // Get input from file
     if (myfile.is_open()) {
         while (myfile.good()) {
