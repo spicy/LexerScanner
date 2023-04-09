@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <list>
+#include <filesystem>
 
 using namespace std;
 
@@ -138,8 +139,19 @@ void lexer()
             }
         }
 
-        for (Token token : tokens)
-            cout << TypeToString(token.type) << "         '" << token.match << "'" << endl;
+        std::ofstream outfile("output.txt");
+
+         if ( outfile.is_open() ) 
+         {
+            for (Token token : tokens)
+            {            
+                outfile << TypeToString(token.type) << "         '" << token.match << "'" << endl;
+            }
+            
+        }
+        //    cout << TypeToString(token.type) << "         '" << token.match << "'" << endl;
+        outfile.close();
+        
     }
 }
 
